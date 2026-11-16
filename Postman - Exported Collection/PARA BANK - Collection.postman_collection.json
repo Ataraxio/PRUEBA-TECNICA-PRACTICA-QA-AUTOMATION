@@ -1,0 +1,132 @@
+{
+  "info": {
+    "_postman_id": "324de8da-9b97-4ed7-9cbd-9c97f41cd1f7",
+    "name": "PARA BANK - Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19650655",
+    "_collection_link": "https://go.postman.co/collection/19650655-324de8da-9b97-4ed7-9cbd-9c97f41cd1f7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Account Transactions",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = xml2Json(pm.response.text());\nconst transactions = json.transactions.transaction;\nconst txArray = Array.isArray(transactions) ? transactions : [transactions];\n\n// 1. Status code is 200\npm.test(\"Status code is 200\", () => {\n    pm.response.to.have.status(200);\n});\n\n// 2. Response time is under 5000ms\npm.test(\"Response time is acceptable\", () => {\n    pm.expect(pm.response.responseTime).to.be.below(5000);\n});\n\n// 3. Response is XML with transactions\npm.test(\"Response is XML with transactions\", () => {\n    pm.expect(pm.response.text()).to.include(\"<transactions>\");\n    pm.expect(txArray.length).to.be.above(0);\n});\n\n// 4. Each transaction has required fields\npm.test(\"Each transaction has the expected fields\", () => {\n    txArray.forEach(tx => {\n        pm.expect(tx).to.include.keys(\"id\", \"accountId\", \"type\", \"date\", \"amount\", \"description\");\n    });\n});\n\n// 5. Transaction type is valid (Debit or Credit)\npm.test(\"Transaction types are Debit or Credit\", () => {\n    txArray.forEach(tx => {\n        pm.expect([\"Debit\", \"Credit\"]).to.include(tx.type);\n    });\n});\n\n// 6. Transaction amount is a positive number\npm.test(\"Transaction amounts are positive numbers\", () => {\n    txArray.forEach(tx => {\n        pm.expect(parseFloat(tx.amount)).to.be.above(0);\n    });\n});\n\n// 7. Transaction accountId matches the collection variable account_id\npm.test(\"All transactions belong to the requested account\", () => {\n    const accountId = pm.collectionVariables.get(\"account_id\");\n    txArray.forEach(tx => {\n        pm.expect(tx.accountId).to.equal(accountId);\n    });\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://parabank.parasoft.com/parabank/services/bank/accounts/{{account_id}}/transactions",
+          "protocol": "https",
+          "host": [
+            "parabank",
+            "parasoft",
+            "com"
+          ],
+          "path": [
+            "parabank",
+            "services",
+            "bank",
+            "accounts",
+            "{{account_id}}",
+            "transactions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Transfer Funds",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test 1: Status code is 200\npm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\n// Test 2: Response time is acceptable\npm.test(\"Response time is less than 5000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(5000);\n});\n\n// Test 3: Response body confirms successful transfer\npm.test(\"Response confirms successful transfer\", function () {\n    pm.expect(pm.response.text()).to.include(\"Successfully transferred\");\n});\n\n// Test 4: Response body includes the correct amount\npm.test(\"Response includes the transferred amount\", function () {\n    const amount = pm.request.url.query.get(\"amount\");\n    pm.expect(pm.response.text()).to.include(\"$\" + amount);\n});\n\n// Test 5: Response body includes the source account\npm.test(\"Response includes the source account ID\", function () {\n    const fromAccountId = pm.request.url.query.get(\"fromAccountId\");\n    pm.expect(pm.response.text()).to.include(fromAccountId);\n});\n\n// Test 6: Response body includes the destination account\npm.test(\"Response includes the destination account ID\", function () {\n    const toAccountId = pm.request.url.query.get(\"toAccountId\");\n    pm.expect(pm.response.text()).to.include(toAccountId);\n});\n\n// Test 7: Response is not empty\npm.test(\"Response body is not empty\", function () {\n    pm.expect(pm.response.text()).to.not.be.empty;\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "{{username_a}}",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "{{password_transfer_funds}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "https://parabank.parasoft.com/parabank/services_proxy/bank/transfer?fromAccountId=14676&toAccountId={{account_id}}&amount={{amount}}",
+          "protocol": "https",
+          "host": [
+            "parabank",
+            "parasoft",
+            "com"
+          ],
+          "path": [
+            "parabank",
+            "services_proxy",
+            "bank",
+            "transfer"
+          ],
+          "query": [
+            {
+              "key": "fromAccountId",
+              "value": "14676"
+            },
+            {
+              "key": "toAccountId",
+              "value": "{{account_id}}"
+            },
+            {
+              "key": "amount",
+              "value": "{{amount}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "username_a",
+      "value": "a"
+    },
+    {
+      "key": "password_user_a",
+      "value": "a"
+    },
+    {
+      "key": "password_transfer_funds",
+      "value": "a"
+    },
+    {
+      "key": "account_id",
+      "value": "14676"
+    },
+    {
+      "key": "amount",
+      "value": "77"
+    }
+  ]
+}
