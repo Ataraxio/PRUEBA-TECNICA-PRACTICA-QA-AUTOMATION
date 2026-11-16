@@ -2,21 +2,21 @@
 
 ## Overview
 
-This project contains automated end-to-end tests developed using Playwright and TypeScript.
+Este proyecto contiene pruebas automatizadas de extremo a extremo (End-to-End) desarrolladas utilizando Playwright y TypeScript.
 
-The tests validate application functionality through browser automation, including user registration, login, bill payment, and negative test scenarios.
+Las pruebas permiten validar las funcionalidades de la aplicación mediante la automatización del navegador, incluyendo el registro de usuarios, inicio de sesión, pago de facturas y escenarios de pruebas negativas.
 
 ### Application Under Test
 
-All automated tests are performed against the ParaBank Demo Application.
+Todas las pruebas automatizadas se ejecutan sobre la aplicación de demostración ParaBank.
 
 **Application URL:** https://parabank.parasoft.com/parabank/index.htm
 
-ParaBank is the target application used to execute and validate the automated functional test scenarios.
+ParaBank es la aplicación utilizada para ejecutar y validar los escenarios de pruebas funcionales automatizadas.
 
 ## Prerequisites
 
-Before running the tests, make sure you have installed the following:
+Antes de ejecutar las pruebas, asegúrate de tener instaladas las siguientes herramientas:
 
 - **Node.js and npm** – [Download Node.js](https://nodejs.org/)
 - **Visual Studio Code** – [Download VS Code](https://code.visualstudio.com/)
